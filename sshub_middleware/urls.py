@@ -17,10 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
+from sshub_middleware.api import router
+
 urlpatterns = [
     url(r'^', admin.site.urls),
+    url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
-admin.site.site_header = _("SSHub Middleware")
-admin.site.site_title = _("Site Admin")
+admin.site.site_header = _('SSHub Middleware')
+admin.site.site_title = _('Site Admin')
