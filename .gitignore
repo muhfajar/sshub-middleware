@@ -156,3 +156,4 @@ venv.bak/
 .mypy_cache/
 
 /sshub_middleware/settings/private.py
+/db.sqlite3
