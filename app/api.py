@@ -6,7 +6,7 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import permission_classes
 
 from app.models import RFID, SSHub
-from sshub_middleware.settings import SSHUB_API
+from sshub_middleware.settings import SSHUB_API, SSHUB_FETCH_URL
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,7 +44,7 @@ class RFIDViewSet(viewsets.ModelViewSet):
 
 @permission_classes(('AllowAny',))
 def sync(request):
-    url = 'http://hubdev.softwareseni.co.id/api/v1/users'
+    url = SSHUB_FETCH_URL
     headers = {'token': SSHUB_API}
     sshub_data = rest.get(url, headers=headers)
 
