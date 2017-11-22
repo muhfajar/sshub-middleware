@@ -14,9 +14,18 @@ class SSHub(models.Model):
 class RFID(models.Model):
     token_id = models.CharField(max_length=16)
     sshub = models.OneToOneField(SSHub)
+    create = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.sshub.name
 
     class Meta:
         verbose_name = 'RFID'
+
+
+class Log(models.Model):
+    rfid = models.ForeignKey(RFID)
+    last_access = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.rfid.token_id
