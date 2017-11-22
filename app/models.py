@@ -12,7 +12,7 @@ class SSHub(models.Model):
 
 
 class RFID(models.Model):
-    token_id = models.CharField(max_length=16)
+    token_id = models.CharField(max_length=16, unique=True)
     sshub = models.OneToOneField(SSHub)
     create = models.DateTimeField(auto_now_add=True, blank=True)
 

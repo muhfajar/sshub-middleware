@@ -1,3 +1,5 @@
+import json
+
 import requests as rest
 
 from django.contrib.auth.models import User
@@ -6,7 +8,7 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import permission_classes
 
 from app.models import RFID, SSHub, Log
-from sshub_middleware.settings import SSHUB_API, SSHUB_FETCH_URL
+from sshub_middleware.settings import SSHUB_API, SSHUB_FETCH_URL, SSHUB_LOGIN_URL
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,6 +48,36 @@ class SSHubViewSet(viewsets.ModelViewSet):
 class RFIDViewSet(viewsets.ModelViewSet):
     queryset = RFID.objects.all()
     serializer_class = RFIDSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = json.loads(request.body.decode('utf-8'))
+
+        # set to log if rfid not found in system
+        try:
+            RFID.objects.filter(token_id__exact=data['tokenID'])
+        except RFID.DoesNotExist:
+            Log.objects.create(rfid=data['tokenID'])
+            return JsonResponse({
+                "error": "true",
+                "errorMessage": "Card has not been paired with user"
+            })
+
+        # login proses
+        rfid_data = SSHub.objects.filter(rfid__token_id__exact=data['tokenID']).first()
+
+        # trigger start work
+        url = SSHUB_LOGIN_URL(rfid_data.id)
+        headers = {'token': SSHUB_API}
+        sshub_data = rest.get(url, headers=headers)
+
+        return JsonResponse({
+            "error": "false",
+            "tokenID": data['tokenID'],
+            "uid": rfid_data.id,
+            "name": rfid_data.name,
+            "status": 'LOGGED_IN',
+            "payload": sshub_data.json()
+        })
 
 
 class LogViewSet(viewsets.ModelViewSet):

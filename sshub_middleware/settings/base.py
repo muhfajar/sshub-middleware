@@ -164,3 +164,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SSHUB_FETCH_URL = 'http://hubdev.softwareseni.co.id/api/v1/users'
+SSHUB_LOGIN_URL = lambda user: 'http://hubdev.softwareseni.co.id/api/v1/users/{}/login?start=1'.format(user)
