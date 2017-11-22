@@ -24,8 +24,8 @@ class RFID(models.Model):
 
 
 class Log(models.Model):
-    rfid = models.ForeignKey(RFID)
+    rfid = models.CharField(max_length=16, unique=True)
     last_access = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return self.rfid.token_id
+        return self.rfid

@@ -3,6 +3,7 @@ import json
 import requests as rest
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import permission_classes
@@ -53,9 +54,7 @@ class RFIDViewSet(viewsets.ModelViewSet):
         data = json.loads(request.body.decode('utf-8'))
 
         # set to log if rfid not found in system
-        try:
-            RFID.objects.filter(token_id__exact=data['tokenID'])
-        except RFID.DoesNotExist:
+        if not RFID.objects.filter(token_id__exact=data['tokenID']).exists():
             Log.objects.create(rfid=data['tokenID'])
             return JsonResponse({
                 "error": "true",
