@@ -24,9 +24,9 @@ class SSHubSerializer(serializers.ModelSerializer):
 
 
 class RFIDSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = RFID
-            fields = '__all__'
+    class Meta:
+        model = RFID
+        fields = '__all__'
 
 
 class LogSerializer(serializers.ModelSerializer):
