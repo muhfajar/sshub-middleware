@@ -1,6 +1,7 @@
 django
 djangorestframework
 djangorestframework-jwt
+coreapi
 markdown
 django-filter
 whitenoise
