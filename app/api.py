@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from rest_framework import routers, serializers, viewsets
 from rest_framework.decorators import permission_classes
 
-from app.models import RFID, SSHub
+from app.models import RFID, SSHub, Log
 from sshub_middleware.settings import SSHUB_API, SSHUB_FETCH_URL
 
 
@@ -27,6 +27,12 @@ class RFIDSerializer(serializers.ModelSerializer):
             fields = '__all__'
 
 
+class LogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Log
+        fields = '__all__'
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -39,6 +45,11 @@ class SSHubViewSet(viewsets.ModelViewSet):
 
 class RFIDViewSet(viewsets.ModelViewSet):
     queryset = RFID.objects.all()
+    serializer_class = RFIDSerializer
+
+
+class LogViewSet(viewsets.ModelViewSet):
+    queryset = Log.objects.all()
     serializer_class = RFIDSerializer
 
 
@@ -60,3 +71,4 @@ router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'sshub', SSHubViewSet)
 router.register(r'rfid', RFIDViewSet)
+router.register(r'log', LogViewSet)
