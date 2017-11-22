@@ -1,10 +1,14 @@
+import requests as rest
+
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from rest_framework import routers, serializers, viewsets
+from rest_framework.decorators import permission_classes
 
-from app.models import SSHub, RFID
+from app.models import RFID, SSHub
+from sshub_middleware.settings import SSHUB_API
 
 
-# Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -23,7 +27,6 @@ class RFIDSerializer(serializers.ModelSerializer):
             fields = '__all__'
 
 
-# ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -39,7 +42,20 @@ class RFIDViewSet(viewsets.ModelViewSet):
     serializer_class = RFIDSerializer
 
 
-# Routers provide an easy way of automatically determining the URL conf.
+@permission_classes(('AllowAny',))
+def sync(request):
+    url = 'http://hubdev.softwareseni.co.id/api/v1/users'
+    headers = {'token': SSHUB_API}
+    sshub_data = rest.get(url, headers=headers)
+
+    # start import data
+    for user in sshub_data.json()['result']:
+        SSHub.objects.update_or_create(id=int(user['user_id']), name=user['name'])
+    return JsonResponse({
+        "sync": "success"
+    })
+
+
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'sshub', SSHubViewSet)
