@@ -75,7 +75,7 @@ class RFIDViewSet(viewsets.ModelViewSet):
             "uid": rfid_data.id,
             "name": rfid_data.name,
             "status": 'LOGGED_IN',
-            "payload": sshub_data.json()
+            # "payload": sshub_data.json()
         })
 
 

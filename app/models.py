@@ -24,7 +24,7 @@ class RFID(models.Model):
 
 
 class Log(models.Model):
-    rfid = models.CharField(max_length=16, unique=True)
+    rfid = models.CharField(max_length=16)
     last_access = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
